@@ -6,7 +6,11 @@
 include ../mk/default.mk
 
 .PHONY: all
-all: arch
+all: kern arch
+
+.PHONY: kern
+kern:
+	cd kern/; make $(PASSDOWN_ARGS)
 
 .PHONY: arch
 arch:

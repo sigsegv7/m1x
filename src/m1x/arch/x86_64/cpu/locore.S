@@ -5,11 +5,13 @@
 
     .text
     .globl _start
+    .extern kmain
 _start:
     cli
     cld
 
     xor %rbp, %rbp
+    call kmain
 
 1:  hlt
     jmp 1b
