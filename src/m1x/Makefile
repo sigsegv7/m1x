@@ -10,7 +10,7 @@ all: kern arch
 
 .PHONY: kern
 kern:
-	cd kern/; make $(PASSDOWN_ARGS)
+	cd kern/; make $(PASSDOWN_ARGS) ARCH_TARGET=$(ARCH_TARGET)
 
 .PHONY: arch
 arch:

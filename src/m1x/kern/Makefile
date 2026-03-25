@@ -19,7 +19,8 @@ CFLAGS = 					\
 	-I../include/			\
 	-I../foreign/flanterm/src	\
 	-DPRINTF_DISABLE_SUPPORT_PTRDIFF_T \
-	-DPRINTF_DISABLE_SUPPORT_FLOAT
+	-DPRINTF_DISABLE_SUPPORT_FLOAT		\
+	-D_M1X_ARCH="\"$(ARCH_TARGET)\""
 
 .PHONY: all
 all: $(OFILES)
