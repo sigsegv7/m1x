@@ -6,12 +6,16 @@
 #ifndef _MACHINE_IDT_H_
 #define _MACHINE_IDT_H_ 1
 
+#ifndef __ASSEMBLER__
 #include <sys/types.h>
 #include <sys/cdefs.h>
+#endif  /* !__ASSEMBLER__ */
 
 #define IDT_INT_GATE    0x8E
 #define IDT_TRAP_GATE   0x8F
 #define IDT_USER_GATE   0xEE
+
+#ifndef __ASSEMBLER__
 
 /*
  * Represents an interrupt descriptor table gate
@@ -54,4 +58,5 @@ void md_idt_gate_set(uint8_t vector, uintptr_t isr, uint8_t ist, uint8_t type);
  */
 void md_idt_load(void);
 
+#endif  /* !__ASSEMBLER__ */
 #endif  /* !_MACHINE_IDT_H_ */
