@@ -54,6 +54,12 @@ struct __packed idtr {
 void md_idt_gate_set(uint8_t vector, uintptr_t isr, uint8_t ist, uint8_t type);
 
 /*
+ * Fill the interrupt descriptor table with IDT gate
+ * entries
+ */
+void md_idt_fill(void);
+
+/*
  * Load the interrupt descriptor table register
  */
 void md_idt_load(void);
