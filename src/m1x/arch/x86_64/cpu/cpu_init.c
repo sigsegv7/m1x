@@ -3,7 +3,7 @@
  * Provided under the BSD-3 clause
  */
 
-#include <stdint.h>
+#include <sys/types.h>
 
 /* From cpu/locore.S */
 extern void md_cpu_lgdt(void *gdtr);
