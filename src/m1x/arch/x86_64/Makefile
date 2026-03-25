@@ -4,6 +4,7 @@
 #
 
 MISC_OFILES = $(shell find ../../ -name "*.o")
+SDK_OFILES = $(shell find ../../../sdk/ -name "*.o")
 
 ASMFILES = $(shell find . -name "*.S" | grep -v "boot")
 ASMOFILES = $(ASMFILES:.S=.S.o)
@@ -24,7 +25,7 @@ CFLAGS = 				\
 
 .PHONY: all
 all: $(OFILES) $(ASMOFILES)
-	$(LD) $(MISC_OFILES) -Tconf/link.ld -o $(KERN_BIN) $(LDFLAGS)
+	$(LD) $(MISC_OFILES) $(SDK_OFILES) -Tconf/link.ld -o $(KERN_BIN) $(LDFLAGS)
 
 %.S.o: %.S
 	$(CC) -c $< $(CFLAGS) -o $@

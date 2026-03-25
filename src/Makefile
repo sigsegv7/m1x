@@ -3,8 +3,14 @@
 # Provided under the BSD-3 clause
 #
 
+include mk/default.mk
+
 .PHONY: all
-all: m1x
+all: sdk m1x
+
+.PHONY: sdk
+sdk:
+	cd sdk/; make $(PASSDOWN_ARGS)
 
 .PHONY: m1x
 m1x:
