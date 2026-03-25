@@ -6,7 +6,12 @@
 include ../mk/default.mk
 
 .PHONY: all
-all: kern arch
+all: target kern arch
+
+.PHONY: target
+target:
+	mkdir -p target/machine/
+	rsync -avr include/arch/$(ARCH_TARGET)/*.h target/machine/
 
 .PHONY: kern
 kern:

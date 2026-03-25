@@ -1,5 +1,6 @@
 /var
 /src/boot/stand/
+/src/m1x/target/
 *.o
 *.d
 *.sys
