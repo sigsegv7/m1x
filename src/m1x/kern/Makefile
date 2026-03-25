@@ -12,6 +12,7 @@ CFLAGS = 					\
 	$(SYS_CFLAGS) 			\
 	-D_KERNEL				\
 	-MMD					\
+	-I../../sdk/include/		\
 	-DPRINTF_DISABLE_SUPPORT_PTRDIFF_T \
 	-DPRINTF_DISABLE_SUPPORT_FLOAT
 
