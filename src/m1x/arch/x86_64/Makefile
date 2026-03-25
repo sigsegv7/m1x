@@ -22,6 +22,7 @@ CFLAGS = 				\
 	-D_KERNEL			\
 	-I../../target/		\
 	-I../../include/	\
+	-I../../../sdk/include/
 
 .PHONY: all
 all: $(OFILES) $(ASMOFILES)

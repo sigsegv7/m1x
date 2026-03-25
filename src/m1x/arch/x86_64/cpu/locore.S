@@ -16,6 +16,7 @@ _start:
 1:  hlt
     jmp 1b
 
+    .globl md_cpu_lgdt
 md_cpu_lgdt:
     push %r12
     push %r13
