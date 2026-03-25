@@ -3,8 +3,13 @@
  * Provided under the BSD-3 clause
  */
 
+#include <dev/cons/cons.h>
+
 void
 kmain(void)
 {
+    /* Initialize the console */
+    cons_init();
+
     for (;;);
 }

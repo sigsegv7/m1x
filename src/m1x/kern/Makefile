@@ -4,6 +4,8 @@
 #
 
 CFILES = $(shell find . -name "*.c")
+CFILES += $(shell find ../foreign/flanterm/ -name "*.c")
+CFILES += $(shell find ../dev/ -name "*.c")
 DFILES = $(CFILES:.c=.d)
 OFILES = $(CFILES:.c=.o)
 
@@ -12,7 +14,9 @@ CFLAGS = 					\
 	$(SYS_CFLAGS) 			\
 	-D_KERNEL				\
 	-MMD					\
-	-I../../sdk/include/		\
+	-I../../sdk/include/	\
+	-I../include/			\
+	-I../foreign/flanterm/src	\
 	-DPRINTF_DISABLE_SUPPORT_PTRDIFF_T \
 	-DPRINTF_DISABLE_SUPPORT_FLOAT
 
