@@ -6,7 +6,11 @@
 include mk/default.mk
 
 .PHONY: all
-all: sdk m1x
+all: sdk m1x boot
+
+.PHONY: boot
+boot:
+	cd boot/; make
 
 .PHONY: sdk
 sdk:

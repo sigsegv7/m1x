@@ -1,4 +1,5 @@
 /var
+/src/boot/stand/
 *.o
 *.d
 *.sys
