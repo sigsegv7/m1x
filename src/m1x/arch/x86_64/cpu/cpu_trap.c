@@ -23,7 +23,7 @@ static const char *trapstr[] = {
     [TRAP_TS]        = "invalid tss",
     [TRAP_NP]        = "segment not present",
     [TRAP_SS]        = "stack segment fault",
-    [TRAP_GP]          = "general protection fault",
+    [TRAP_GP]        = "general protection fault",
     [TRAP_PF]        = "page fault"
 };
 
