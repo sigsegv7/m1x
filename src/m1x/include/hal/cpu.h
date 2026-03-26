@@ -7,6 +7,12 @@
 #define _HAL_CPU_H_ 1
 
 /*
+ * Each architecture is to implement their own version
+ * of the standard processor primitives.
+ */
+#include <machine/prim.h>
+
+/*
  * Initialize the current processor
  */
 void hal_cpu_init(void);

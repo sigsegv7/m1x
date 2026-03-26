@@ -17,6 +17,7 @@ CFLAGS = 					\
 	-MMD					\
 	-I../../sdk/include/	\
 	-I../include/			\
+	-I../target/			\
 	-I../foreign/flanterm/src	\
 	-DPRINTF_DISABLE_SUPPORT_PTRDIFF_T \
 	-DPRINTF_DISABLE_SUPPORT_FLOAT		\
