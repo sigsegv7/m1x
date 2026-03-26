@@ -4,6 +4,7 @@
  */
 
 #include <dev/cons/cons.h>
+#include <kern/panic.h>
 #include <lib/printf.h>
 #include <hal/cpu.h>
 
@@ -35,5 +36,6 @@ kmain(void)
     /* Initialize the BSP */
     hal_cpu_init();
 
-    for (;;);
+    panic("end of kernel\n");
+    __builtin_unreachable();
 }
