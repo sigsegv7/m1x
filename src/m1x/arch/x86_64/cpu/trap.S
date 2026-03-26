@@ -37,6 +37,7 @@ md_idt_fill:
 diverr:
     FRAME_PREAMBLE(TRAP_DIVERR)
     mov %rsp, %rdi
+    call trap_dispatch
 1:  cli
     hlt
     jmp 1b
