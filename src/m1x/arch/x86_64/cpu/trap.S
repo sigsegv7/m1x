@@ -29,6 +29,9 @@ md_idt_fill:
     set_trap 0x08, dbflt, 0
     set_trap 0x0A, tsflt, 0
     set_trap 0x0B, npflt, 0
+    set_trap 0xC,  ssflt, 0
+    set_trap 0xD,  gpflt, 0
+    set_trap 0xE,  pfflt, 0
 
     pop %rbx
     pop %r15
@@ -72,6 +75,30 @@ tsflt:
 
 npflt:
     FRAME_PREAMBLE(TRAP_NP)
+    mov %rsp, %rdi
+    call trap_dispatch
+1:  cli
+    hlt
+    jmp 1b
+
+ssflt:
+    FRAME_PREAMBLE(TRAP_SS)
+    mov %rsp, %rdi
+    call trap_dispatch
+1:  cli
+    hlt
+    jmp 1b
+
+gpflt:
+    FRAME_PREAMBLE(TRAP_GP)
+    mov %rsp, %rdi
+    call trap_dispatch
+1:  cli
+    hlt
+    jmp 1b
+
+pfflt:
+    FRAME_PREAMBLE(TRAP_PF)
     mov %rsp, %rdi
     call trap_dispatch
 1:  cli
