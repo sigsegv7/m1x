@@ -10,7 +10,7 @@
  * Push all registers onto the stack to construct
  * the trapframe
  */
-#define FRAME_PUSHALL    \
+#define FRAME_PUSHALL(TRAPNO) \
     pushq %rsi          ;\
     pushq %rdi          ;\
     pushq %rcx          ;\
@@ -25,13 +25,15 @@
     pushq %r11          ;\
     pushq %r10          ;\
     pushq %r9           ;\
-    pushq %r8
+    pushq %r8           ;\
+    pushq $TRAPNO
 
 /*
  * Used to restore all registers after an interrupt
  * has completed
  */
 #define FRAME_POPALL     \
+    add $8, %rsp         ;\
     popq %r8             ;\
     popq %r9             ;\
     popq %r10            ;\
@@ -48,29 +50,28 @@
     popq %rdi            ;\
     popq %rsi
 
-
 /*
  * Used to push the trapframe if the exception has an
  * error code.
  */
-#define FRAME_PREAMBLE_EC ;\
+#define FRAME_PREAMBLE_EC(TRAPNO) ;\
     testb $3, 16(%rsp)    ;\
     jnz 1f                ;\
     jmp 2f                ;\
 1:  lfence                ;\
     swapgs                ;\
-2:  FRAME_PUSHALL
+2:  FRAME_PUSHALL(TRAPNO)
 
 /*
  * Used to push the trapframe if the exception has no
  * error code.
  */
-#define FRAME_PREAMBLE    ;\
+#define FRAME_PREAMBLE(TRAPNO) ;\
     testb $3, 8(%rsp)     ;\
     jnz 1f                ;\
     jmp 2f                ;\
 1:  lfence                ;\
     swapgs                ;\
-2:  FRAME_PUSHALL
+2:  FRAME_PUSHALL(TRAPNO)
 
 #endif  /* !_MACHINE_FRAMEASM_H_ */

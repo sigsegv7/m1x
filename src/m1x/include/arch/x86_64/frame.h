@@ -11,6 +11,7 @@
 
 struct __packed trapframe {
     /* Pushed by us */
+    uint64_t trapno;
     uint64_t r8;
     uint64_t r9;
     uint64_t r10;

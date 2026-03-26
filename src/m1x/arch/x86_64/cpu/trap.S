@@ -3,6 +3,7 @@
  * Provided under the BSD-3 clause
  */
 
+#include <machine/trap.h>
 #include <machine/frameasm.h>
 #include <machine/idt.h>
 
@@ -34,7 +35,7 @@ md_idt_fill:
 
     .align 8
 diverr:
-    FRAME_PREAMBLE
+    FRAME_PREAMBLE(TRAP_DIVERR)
     mov %rsp, %rdi
 1:  cli
     hlt
