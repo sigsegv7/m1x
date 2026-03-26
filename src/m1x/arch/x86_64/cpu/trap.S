@@ -25,6 +25,8 @@ md_idt_fill:
     push %rbx
 
     set_trap 0x00, diverr, 0
+    set_trap 0x06, ud, 0
+    set_trap 0x08, dbflt, 0
 
     pop %rbx
     pop %r15
@@ -36,6 +38,22 @@ md_idt_fill:
     .align 8
 diverr:
     FRAME_PREAMBLE(TRAP_DIVERR)
+    mov %rsp, %rdi
+    call trap_dispatch
+1:  cli
+    hlt
+    jmp 1b
+
+ud:
+    FRAME_PREAMBLE(TRAP_UD)
+    mov %rsp, %rdi
+    call trap_dispatch
+1:  cli
+    hlt
+    jmp 1b
+
+dbflt:
+    FRAME_PREAMBLE(TRAP_DF)
     mov %rsp, %rdi
     call trap_dispatch
 1:  cli
