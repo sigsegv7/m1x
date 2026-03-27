@@ -20,11 +20,29 @@ struct cons_attr {
 };
 
 /*
+ * Console dimensions
+ *
+ * @cols: Columns
+ * @rows: Rows
+ */
+struct cons_dimms {
+    size_t cols;
+    size_t rows;
+};
+
+/*
  * Initialize the boot console
  *
  * @attr: Console attributes
  */
 void cons_init(struct cons_attr *attr);
+
+/*
+ * Obtain console dimensions
+ *
+ * @res: Result is written here
+ */
+void cons_get_dimms(struct cons_dimms *res);
 
 /*
  * Reinitialize the console

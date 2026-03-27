@@ -60,6 +60,16 @@ cons_reinit(struct cons_attr *attr)
 }
 
 void
+cons_get_dimms(struct cons_dimms *res)
+{
+    if (res == NULL) {
+        return;
+    }
+
+    flanterm_get_dimensions(ft_ctx, &res->cols, &res->rows);
+}
+
+void
 cons_write(const char *s, size_t len)
 {
     if (fbresp == NULL) {
