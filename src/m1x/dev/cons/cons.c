@@ -20,6 +20,10 @@ static struct limine_framebuffer_request fbreq = {
 void
 cons_init(struct cons_attr *attr)
 {
+    if (attr == NULL) {
+        return;
+    }
+
     fbresp = fbreq.response;
     ft_ctx = flanterm_fb_init(
         NULL,
