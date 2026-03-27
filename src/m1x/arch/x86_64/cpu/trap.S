@@ -29,9 +29,9 @@ md_idt_fill:
     set_trap 0x08, dbflt, 0
     set_trap 0x0A, tsflt, 0
     set_trap 0x0B, npflt, 0
-    set_trap 0xC,  ssflt, 0
-    set_trap 0xD,  gpflt, 0
-    set_trap 0xE,  pfflt, 0
+    set_trap 0x0C,  ssflt, 0
+    set_trap 0x0D,  gpflt, 0
+    set_trap 0x0E,  pfflt, 0
 
     pop %rbx
     pop %r15
