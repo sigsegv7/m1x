@@ -46,7 +46,7 @@ kmain(void)
     /* Initialize the PMM */
     mm_physmem_init();
 
-    printf(" -- END OF KERNEL REACEHD; HALTING --\n");
+    printf(" -- END OF KERNEL REACHED; HALTING --\n");
     for (;;);
     __builtin_unreachable();
 }
