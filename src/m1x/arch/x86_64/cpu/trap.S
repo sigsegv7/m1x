@@ -25,6 +25,7 @@ md_idt_fill:
     push %rbx
 
     set_trap 0x00, diverr, 0
+    set_trap 0x02, nmi, 0
     set_trap 0x06, ud, 0
     set_trap 0x08, dbflt, 0
     set_trap 0x0A, tsflt, 0
@@ -48,6 +49,15 @@ diverr:
 1:  cli
     hlt
     jmp 1b
+
+nmi:
+    FRAME_PREAMBLE(TRAP_NMI)
+    mov %rsp, %rdi
+    call trap_dispatch
+1:  cli
+    hlt
+    jmp 1b
+
 
 ud:
     FRAME_PREAMBLE(TRAP_UD)

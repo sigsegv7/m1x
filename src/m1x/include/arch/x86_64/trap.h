@@ -18,6 +18,7 @@
 #define TRAP_SS      0x05       /* Stack segment fault */
 #define TRAP_GP      0x06       /* General protection fault */
 #define TRAP_PF      0x07       /* Page fault */
+#define TRAP_NMI     0x08       /* Non-maskable interrupt */
 
 #ifndef __ASSEMBLER__
 void trap_dispatch(struct trapframe *tf);
