@@ -46,6 +46,20 @@ cons_init(struct cons_attr *attr)
 }
 
 void
+cons_reinit(struct cons_attr *attr)
+{
+    if (attr == NULL) {
+        return;
+    }
+
+    if (ft_ctx != NULL) {
+        flanterm_deinit(ft_ctx, NULL);
+    }
+
+    cons_init(attr);
+}
+
+void
 cons_write(const char *s, size_t len)
 {
     if (fbresp == NULL) {

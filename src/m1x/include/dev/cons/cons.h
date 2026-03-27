@@ -27,6 +27,13 @@ struct cons_attr {
 void cons_init(struct cons_attr *attr);
 
 /*
+ * Reinitialize the console
+ *
+ * @attr: Attributes to reinit with
+ */
+void cons_reinit(struct cons_attr *attr);
+
+/*
  * Write to the boot console
  */
 void cons_write(const char *s, size_t len);
