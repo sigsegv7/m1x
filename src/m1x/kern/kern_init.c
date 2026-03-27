@@ -5,6 +5,7 @@
 
 #include <dev/cons/cons.h>
 #include <kern/panic.h>
+#include <mm/physmem.h>
 #include <lib/printf.h>
 #include <hal/cpu.h>
 
@@ -41,6 +42,9 @@ kmain(void)
 
     /* Initialize the BSP */
     hal_cpu_init();
+
+    /* Initialize the PMM */
+    mm_physmem_init();
 
     printf(" -- END OF KERNEL REACEHD; HALTING --\n");
     for (;;);
