@@ -42,6 +42,7 @@ kmain(void)
     /* Initialize the BSP */
     hal_cpu_init();
 
-    panic("end of kernel\n");
+    printf(" -- END OF KERNEL REACEHD; HALTING --\n");
+    for (;;);
     __builtin_unreachable();
 }
