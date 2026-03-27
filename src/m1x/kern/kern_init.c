@@ -11,6 +11,12 @@
 /* Kernel version */
 #define _M1X_VERSION "0.0.1"
 
+/* Default console attributes */
+static struct cons_attr conattr = {
+    .fg = 0x008C00,
+    .bg = 0x000000
+};
+
 /*
  * Display a boot banner on early start up
  */
@@ -28,7 +34,7 @@ void
 kmain(void)
 {
     /* Initialize the console */
-    cons_init();
+    cons_init(&conattr);
 
     /* Print the boot banner */
     banner();

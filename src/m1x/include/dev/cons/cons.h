@@ -9,9 +9,22 @@
 #include <stdint.h>
 
 /*
- * Initialize the boot console
+ * Represents console attributes
+ *
+ * @fg: Console foreground
+ * @bg: Console background
  */
-void cons_init(void);
+struct cons_attr {
+    uint32_t fg;
+    uint32_t bg;
+};
+
+/*
+ * Initialize the boot console
+ *
+ * @attr: Console attributes
+ */
+void cons_init(struct cons_attr *attr);
 
 /*
  * Write to the boot console

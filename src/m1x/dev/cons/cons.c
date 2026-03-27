@@ -18,10 +18,8 @@ static struct limine_framebuffer_request fbreq = {
 };
 
 void
-cons_init(void)
+cons_init(struct cons_attr *attr)
 {
-    uint32_t fg = 0x008C00;
-
     fbresp = fbreq.response;
     ft_ctx = flanterm_fb_init(
         NULL,
@@ -37,7 +35,7 @@ cons_init(void)
         FRAMEBUFFER->blue_mask_size,
         FRAMEBUFFER->blue_mask_shift,
         NULL, NULL, NULL,
-        NULL, &fg, NULL,
+        &attr->bg, &attr->fg, NULL,
         NULL, NULL, 0, 0, 0,
         0, 0, 0, 0
     );
