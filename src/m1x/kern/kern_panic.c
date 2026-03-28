@@ -47,7 +47,7 @@ __panic(const char *fmt, ...)
     cons_get_dimms(&consdimms);
     cons_reinit(&consattr);
 
-    panic_putf("\033[?25lA problem has been detected during system operation");
+    panic_putf("A problem has been detected during system operation");
     panic_putf("The machine has been halted to prevent any damange");
     line = 12;
 
