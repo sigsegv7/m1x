@@ -4,6 +4,7 @@
  */
 
 #include <kern/panic.h>
+#include <hal/panic.h>
 #include <lib/printf.h>
 #include <string.h>
 #include <dev/cons/cons.h>
@@ -48,11 +49,14 @@ __panic(const char *fmt, ...)
 
     panic_putf("\033[?25lA problem has been detected during system operation");
     panic_putf("The machine has been halted to prevent any damange");
-    line = 13;
+    line = 12;
 
     va_start(panic_ap, fmt);
     vsnprintf(panic_buf, sizeof(panic_buf), fmt, panic_ap);
     panic_putf("Reason: %s", panic_buf);
+
+    line = 15;
+    hal_panic_trace(panic_putf);
 
     for (;;) {
         hal_cpu_halt();
