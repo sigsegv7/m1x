@@ -5,6 +5,7 @@
 
 #include <sys/param.h>
 #include <sys/units.h>
+#include <kern/panic.h>
 #include <mm/physmem.h>
 #include <mm/vmem.h>
 #include <hal/param.h>
@@ -288,5 +289,10 @@ mm_physmem_init(void)
 {
     memmap_resp = memmap_req.response;
     physmem_query_map();
+
+    if (usable_mem < UNIT_GIB) {
+        panic("m1x requires at least 1 GiB of RAM\n");
+    }
+
     physmem_alloc_bitmap();
 }
