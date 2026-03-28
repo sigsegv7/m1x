@@ -4,6 +4,7 @@
  */
 
 #include <sys/param.h>
+#include <sys/units.h>
 #include <mm/physmem.h>
 #include <lib/limine.h>
 #include <lib/printf.h>
@@ -64,6 +65,36 @@ static const char *typetab[] = {
     [MEMORY_ACPI_TABLES]    = "acpi tables"
 };
 
+/* Memory stats */
+static size_t usable_mem = 0;
+static size_t total_mem = 0;
+
+/*
+ * Print memory stats in a nice form
+ *
+ * @len: Length to print
+ * @title: Stat title
+ */
+static inline void
+print_size(size_t len, const char *title)
+{
+    if (title == NULL) {
+        return;
+    }
+
+    if (len >= UNIT_GIB) {
+        pr_trace("%d GiB %s\n", len / UNIT_GIB, title);
+    } else if (len >= UNIT_MIB) {
+        pr_trace("%d MiB %s\n", len / UNIT_MIB, title);
+    } else {
+        pr_trace("%d bytes %s\n", len, title);
+    }
+}
+
+/*
+ * Gather information from the platform memory
+ * map
+ */
 static void
 physmem_query_map(void)
 {
@@ -82,7 +113,17 @@ physmem_query_map(void)
             base + length,
             MEMTYPE_STR(type)
         );
+
+        total_mem += length;
+        if (type != MEMORY_USABLE) {
+            continue;
+        }
+
+        usable_mem += length;
     }
+
+    print_size(usable_mem, "avl");
+    print_size(total_mem, "total");
 }
 
 void
