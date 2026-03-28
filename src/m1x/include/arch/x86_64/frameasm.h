@@ -72,6 +72,21 @@
     jmp 2f                ;\
 1:  lfence                ;\
     swapgs                ;\
-2:  FRAME_PUSHALL(TRAPNO)
+2:  pushq $0              ;\
+    FRAME_PUSHALL(TRAPNO)
+
+/*
+ * Used to pop the trapframe if the exception has
+ * no error code.
+ */
+#define FRAME_EPILOGUE    ;\
+    FRAME_POPALL          ;\
+    add $8, %rsp          ;\
+    testb $3, 8(%rsp)     ;\
+    jnz 1f                ;\
+    jmp 2f                ;\
+1:  lfence                ;\
+    swapgs                ;\
+2:
 
 #endif  /* !_MACHINE_FRAMEASM_H_ */

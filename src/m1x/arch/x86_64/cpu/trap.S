@@ -54,10 +54,8 @@ nmi:
     FRAME_PREAMBLE(TRAP_NMI)
     mov %rsp, %rdi
     call trap_dispatch
-1:  cli
-    hlt
-    jmp 1b
-
+    FRAME_EPILOGUE
+    iretq
 
 ud:
     FRAME_PREAMBLE(TRAP_UD)
