@@ -13,6 +13,8 @@ _start:
     xor %rbp, %rbp
     call kmain
 
+    mfence
+    lfence
 1:  hlt
     jmp 1b
 
