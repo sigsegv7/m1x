@@ -23,4 +23,9 @@
 
 extern volatile struct limine_hhdm_request hhdm_req;
 
+/*
+ * Initialize the virtual memory manager
+ */
+int mm_vmem_init(void);
+
 #endif  /* !_MM_VMEM_H_ */

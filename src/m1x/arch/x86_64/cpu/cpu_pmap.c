@@ -5,6 +5,8 @@
 
 #include <sys/cdefs.h>
 #include <hal/pmap.h>
+#include <mm/physmem.h>
+#include <mm/vmem.h>
 
 /*
  * Page-Table Entry (PTE) flags
@@ -51,4 +53,34 @@ hal_write_vas(struct vas *vas)
         : "r" (vas->cr3)
         : "memory"
     );
+}
+
+void
+hal_fork_vas(struct vas *res)
+{
+    struct vas new_vas;
+    struct vas cur_vas;
+    uint64_t *src, *dest;
+    uintptr_t cr3;
+
+    if (res == NULL) {
+        return;
+    }
+
+    hal_read_vas(&cur_vas);
+    cr3 = cur_vas.cr3 & PTE_ADDR_MASK;
+    new_vas.cr3 = pmm_alloc_frame(1);
+
+    src = pma_to_vma(cr3);
+    dest = pma_to_vma(new_vas.cr3);
+
+    for (int i = 0; i < 512; ++i) {
+        if (i < 256) {
+            dest[i] = 0;
+        } else {
+            dest[i] = src[i];
+        }
+    }
+
+    *res = new_vas;
 }

@@ -18,6 +18,12 @@
 void hal_read_vas(struct vas *res);
 
 /*
+ * Fork a virtual address space and only the kernel
+ * part
+ */
+void hal_fork_vas(struct vas *res);
+
+/*
  * Write a new address space
  *
  * @vas: Vas to set

@@ -6,6 +6,7 @@
 #include <dev/cons/cons.h>
 #include <kern/panic.h>
 #include <mm/physmem.h>
+#include <mm/vmem.h>
 #include <lib/printf.h>
 #include <hal/cpu.h>
 
@@ -45,6 +46,9 @@ kmain(void)
 
     /* Initialize the PMM */
     mm_physmem_init();
+
+    /* Initialize the VMM */
+    mm_vmem_init();
 
     printf("-- END OF KERNEL REACHED; HALTING --\n");
 }
