@@ -10,4 +10,18 @@
 #include <sys/mman.h>
 #include <machine/vas.h>    /* per-arch */
 
+/*
+ * Obtain the current virtual address space
+ *
+ * @res: Result is written here
+ */
+void hal_read_vas(struct vas *res);
+
+/*
+ * Write a new address space
+ *
+ * @vas: Vas to set
+ */
+void hal_write_vas(struct vas *vas);
+
 #endif  /* !_HAL_PMAP_H_ */
