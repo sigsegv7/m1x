@@ -12,7 +12,7 @@
 #include <hal/cpu.h>
 
 /* Kernel version */
-#define _M1X_VERSION "0.0.1"
+#define _M1X_VERSION "0.0.2"
 
 /* Default console attributes */
 static struct cons_attr conattr = {
