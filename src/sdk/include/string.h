@@ -6,7 +6,7 @@
 #ifndef _SDK_STRING_H_
 #define _SDK_STRING_H_ 1
 
-#include <stdint.h>
+#include <sys/types.h>
 
 /*
  * Obtain the length of a string in bytes excluding the NULL
@@ -39,5 +39,17 @@ void *memcpy(void *dest, const void *src, size_t count);
  * Returns `s` on success
  */
 void *memset(void *s, int c, size_t n);
+
+/*
+ * Compare two strings and return the differences, zero
+ * if equal
+ *
+ * @s1: String 1 to compare
+ * @s2: String 2 to compare
+ * @n:  Number of bytes to compare
+ *
+ * Returns the differences on success
+ */
+int memcmp(const void *s1, const void *s2, size_t n);
 
 #endif  /* !_SDK_STRING_H_ */
