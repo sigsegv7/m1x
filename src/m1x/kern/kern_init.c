@@ -5,6 +5,7 @@
 
 #include <dev/cons/cons.h>
 #include <kern/panic.h>
+#include <acpi/acpi.h>
 #include <mm/physmem.h>
 #include <mm/vmem.h>
 #include <lib/printf.h>
@@ -50,5 +51,6 @@ kmain(void)
     /* Initialize the VMM */
     mm_vmem_init();
 
+    acpi_init();
     printf("-- END OF KERNEL REACHED; HALTING --\n");
 }

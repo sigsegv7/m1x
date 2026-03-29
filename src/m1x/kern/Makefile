@@ -8,6 +8,7 @@ CFILES += $(shell find ../foreign/ -name "*.c")
 CFILES += $(shell find ../lib/ -name "*.c")
 CFILES += $(shell find ../dev/ -name "*.c")
 CFILES += $(shell find ../mm/ -name "*.c")
+CFILES += $(shell find ../acpi/ -name "*.c")
 DFILES = $(CFILES:.c=.d)
 OFILES = $(CFILES:.c=.o)
 
