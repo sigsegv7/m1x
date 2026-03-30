@@ -24,4 +24,9 @@ void hal_cpu_init(struct kpcr *kpcr);
  */
 void hal_cpu_postinit(struct kpcr *kpcr);
 
+/*
+ * Obtain a reference to the current processor
+ */
+struct kpcr *hal_this_cpu(void);
+
 #endif  /* !_HAL_CPU_H_ */

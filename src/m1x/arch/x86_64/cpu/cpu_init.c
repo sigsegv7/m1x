@@ -9,6 +9,7 @@
 #include <machine/idt.h>
 #include <machine/mcb.h>
 #include <machine/cpuid.h>
+#include <machine/msr.h>
 
 #define pr_trace(fmt, ...) \
     printf("cpu: " fmt, ##__VA_ARGS__)
@@ -55,6 +56,15 @@ hal_cpu_init(struct kpcr *kpcr)
 
     /* Identify the processor */
     cpu_ident(&kpcr->mcb);
+
+    /* Store the current processor in GS */
+    md_wrmsr(IA32_GS_BASE, (uintptr_t)kpcr);
+}
+
+struct kpcr *
+hal_this_cpu(void)
+{
+    return (void *)md_rdmsr(IA32_GS_BASE);
 }
 
 void
