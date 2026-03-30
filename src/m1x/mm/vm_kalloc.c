@@ -5,12 +5,13 @@
 
 #include <sys/param.h>
 #include <kern/panic.h>
-#include <hal/kpcr.h>
+#include <hal/cpu.h>
 #include <mm/kalloc.h>
 #include <mm/vmem.h>
 #include <mm/physmem.h>
 #include <hal/param.h>
 #include <lib/printf.h>
+#include <string.h>
 
 #define pr_trace(fmt, ...)  \
     printf("kalloc: " fmt, ##__VA_ARGS__)
@@ -218,11 +219,12 @@ kalloc_from_desc(struct kalloc_slab_desc *desc, size_t n, size_t gran)
  *
  * @well: Well to allocate from
  * @n:    Number of bytes to allocate
+ * @res:  Descriptor result is written here
  *
  * Returns the base of the memory on success
  */
 static void *
-mm_well_kalloc(struct kalloc_magwell *well, size_t n)
+mm_well_kalloc(struct kalloc_magwell *well, size_t n, struct kalloc_slab_desc **res)
 {
     struct kalloc_mag *mag;
     struct kalloc_slab_desc *desc;
@@ -252,12 +254,36 @@ void *
 mm_kalloc(size_t size)
 {
     struct kpcr *kpcr;
+    struct kalloc_slab_desc *desc, **hdr;
+    size_t data_off;
+    void *mem, *data;
 
     if ((kpcr = hal_this_cpu()) == NULL) {
         return NULL;
     }
 
-    return mm_well_kalloc(&kpcr->magwell, size);
+    data_off = sizeof(struct kalloc_slab_desc *);
+    mem = mm_well_kalloc(
+        &kpcr->magwell,
+        size + data_off,
+        &desc
+    );
+
+    if (mem == NULL) {
+        return NULL;
+    }
+
+    /*
+     * Zero the data part and leave the header part untouched as we
+     * are going to overwrite it anyways
+     */
+    data = PTR_OFFSET(mem, data_off);
+    memset(data, 0, size);
+
+    /* Tack the descriptor reference at the start */
+    hdr = (struct kalloc_slab_desc **)mem;
+    *hdr = desc;
+    return data;
 }
 
 int
