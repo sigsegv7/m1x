@@ -8,6 +8,7 @@
 
 #include <sys/types.h>
 #include <machine/mcb.h>    /* per-arch */
+#include <mm/kalloc.h>
 
 /*
  * Kernel processor control region containing
@@ -15,10 +16,12 @@
  *
  * @id:  Processor ID
  * @mcb: Machine core block
+ * @magwell: Kalloc magazine well
  */
 struct kpcr {
     uint16_t id;
     struct mcb mcb;
+    struct kalloc_magwell magwell;
 };
 
 #endif  /* !_HAL_KPCR_H_ */

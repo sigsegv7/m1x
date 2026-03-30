@@ -18,4 +18,10 @@
  */
 void hal_cpu_init(struct kpcr *kpcr);
 
+/*
+ * Post initialization routine for the current
+ * processor
+ */
+void hal_cpu_postinit(struct kpcr *kpcr);
+
 #endif  /* !_HAL_CPU_H_ */

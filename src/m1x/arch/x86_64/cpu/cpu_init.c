@@ -56,3 +56,14 @@ hal_cpu_init(struct kpcr *kpcr)
     /* Identify the processor */
     cpu_ident(&kpcr->mcb);
 }
+
+void
+hal_cpu_postinit(struct kpcr *kpcr)
+{
+    if (kpcr == NULL) {
+        return;
+    }
+
+    /* Initialize kalloc */
+    mm_kalloc_init(&kpcr->magwell);
+}

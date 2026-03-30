@@ -17,7 +17,6 @@
 #define _M1X_VERSION "0.0.2"
 
 static struct kpcr bsp;
-static struct kalloc_magwell well;
 
 /* Default console attributes */
 static struct cons_attr conattr = {
@@ -53,14 +52,14 @@ kmain(void)
     /* Initialize the PMM */
     mm_physmem_init();
 
+    /* Post init the BSP */
+    hal_cpu_postinit(&bsp);
+
     /* Initialize the VMM */
     mm_vmem_init();
 
     /* Initialize ACPI */
     acpi_init();
-
-    /* Initialize kalloc */
-    mm_kalloc_init(&well);
 
     printf("-- END OF KERNEL REACHED; HALTING --\n");
 }
