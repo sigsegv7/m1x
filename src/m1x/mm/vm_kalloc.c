@@ -187,7 +187,7 @@ kalloc_from_desc(struct kalloc_slab_desc *desc, size_t n, size_t gran)
     void *base = NULL;
 
     if (desc == NULL) {
-        return -1;
+        return NULL;
     }
 
     bits_needed = n / gran;
