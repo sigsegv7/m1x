@@ -230,7 +230,7 @@ mm_well_kalloc(struct kalloc_magwell *well, size_t n, struct kalloc_slab_desc **
     struct kalloc_slab_desc *desc;
     void *base;
 
-    if (well == NULL) {
+    if (well == NULL || desc == NULL) {
         return NULL;
     }
 
@@ -247,6 +247,7 @@ mm_well_kalloc(struct kalloc_magwell *well, size_t n, struct kalloc_slab_desc **
         return NULL;
     }
 
+    *res = desc;
     return base;
 }
 
