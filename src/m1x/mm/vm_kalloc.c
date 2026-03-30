@@ -1,0 +1,209 @@
+/*
+ * Copyright (c) 2026, Mirocom Laboratories
+ * Provided under the BSD-3 clause
+ */
+
+#include <sys/param.h>
+#include <kern/panic.h>
+#include <mm/kalloc.h>
+#include <mm/vmem.h>
+#include <mm/physmem.h>
+#include <hal/param.h>
+#include <lib/printf.h>
+
+#define pr_trace(fmt, ...)  \
+    printf("kalloc: " fmt, ##__VA_ARGS__)
+
+/* Minimum allocation size */
+#define MIN_LOG2_ALLOCSZ 3
+
+/* Precomputed granularity table */
+#define GRAN(x) (1 << (MIN_LOG2_ALLOCSZ + (x)))
+static size_t grantab[MAGS_PER_WELL] = {
+    GRAN(0), GRAN(1),
+    GRAN(2), GRAN(3),
+    GRAN(4), GRAN(5),
+    GRAN(6), GRAN(7)
+};
+#undef GRAN
+
+/*
+ * Obtain a magazine well from a size
+ */
+static struct kalloc_mag *
+kalloc_size_to_mag(struct kalloc_magwell *well, size_t n)
+{
+    if (well == NULL) {
+        return NULL;
+    }
+
+    if (n >= grantab[7])
+        return &well->mag[7];
+    if (n >= grantab[6])
+        return &well->mag[6];
+    if (n >= grantab[5])
+        return &well->mag[5];
+    if (n >= grantab[4])
+        return &well->mag[4];
+    if (n >= grantab[3])
+        return &well->mag[3];
+    if (n >= grantab[2])
+        return &well->mag[2];
+    if (n >= grantab[1])
+        return &well->mag[1];
+    if (n >= grantab[0])
+        return &well->mag[0];
+
+    return NULL;
+}
+
+/*
+ * Initialize a slab descriptor
+ *
+ * @desc: Slab descriptor to initialize
+ *
+ * Returns zero on success
+ */
+static int
+kalloc_init_slabdesc(struct kalloc_slab_desc *desc)
+{
+    uintptr_t pma;
+
+    if (desc == NULL) {
+        return -1;
+    }
+
+    pma = pmm_alloc_frame(PAGES_PER_SLAB);
+    if (pma == 0) {
+        panic("out of memory\n");
+    }
+
+    desc->slab = pma_to_vma(pma);
+    desc->bitmap = 0;
+    return 0;
+}
+
+/*
+ * Initialize a magazine
+ *
+ * @mag: Magazine to initialize
+ */
+static int
+kalloc_init_mag(struct kalloc_mag *mag)
+{
+    uintptr_t desc_pool_pma;
+    size_t desc_pool_entries;
+    struct kalloc_slab_desc *desc_pool;
+
+    if (mag == NULL) {
+        return -1;
+    }
+
+    TAILQ_INIT(&mag->empty);
+    TAILQ_INIT(&mag->partial);
+    TAILQ_INIT(&mag->full);
+
+    desc_pool_pma = pmm_alloc_frame(SLAB_DESC_POOLSZ);
+    if (desc_pool_pma == 0) {
+        return -1;
+    }
+
+    desc_pool = pma_to_vma(desc_pool_pma);
+    desc_pool_entries = (PAGESIZE * SLAB_DESC_POOLSZ);
+    desc_pool_entries /= sizeof(struct kalloc_slab_desc);
+    mag->n_entries = desc_pool_entries;
+
+    for (size_t i = 0; i < desc_pool_entries; ++i) {
+        kalloc_init_slabdesc(&desc_pool[i]);
+        TAILQ_INSERT_TAIL(&mag->empty, &desc_pool[i], link);
+    }
+
+    return 0;
+}
+
+/*
+ * Pull from an empty mag
+ */
+static struct kalloc_slab_desc *
+kalloc_pull_empty(struct kalloc_mag *mag)
+{
+    struct kalloc_slab_desc *desc;
+
+    if (mag == NULL) {
+        return NULL;
+    }
+
+    if (TAILQ_EMPTY(&mag->empty)) {
+        return NULL;
+    }
+
+    /* TODO: LOCKING */
+    desc = TAILQ_FIRST(&mag->empty);
+    TAILQ_REMOVE(&mag->empty, desc, link);
+    return desc;
+}
+
+/*
+ * Pull some slabs from a partial mag, if that fails, try
+ * an empty one
+ */
+static struct kalloc_slab_desc *
+kalloc_pull(struct kalloc_mag *mag)
+{
+    struct kalloc_slab_desc *desc;
+
+    if (mag == NULL) {
+        return NULL;
+    }
+
+    if (TAILQ_EMPTY(&mag->partial)) {
+        if ((desc = kalloc_pull_empty(mag)) == NULL)
+            return NULL;
+
+        return desc;
+    }
+
+    /* TODO: LOCKING */
+    desc = TAILQ_FIRST(&mag->partial);
+    TAILQ_REMOVE(&mag->partial, desc, link);
+    return desc;
+}
+
+void *
+mm_well_kalloc(struct kalloc_magwell *well, size_t n)
+{
+    struct kalloc_mag *mag;
+    struct kalloc_slab_desc *desc;
+
+    if (well == NULL) {
+        return NULL;
+    }
+
+    n = ALIGN_UP(n, 1 << MIN_LOG2_ALLOCSZ);
+    mag = kalloc_size_to_mag(well, n);
+    if (mag == NULL) {
+        return NULL;
+    }
+
+    desc = kalloc_pull(mag);
+
+    /* TODO: Actual allocation */
+    return NULL;
+}
+
+int
+mm_kalloc_init(struct kalloc_magwell *well)
+{
+    if (well == NULL) {
+        return -1;
+    }
+
+    for (size_t i = 0; i < MAGS_PER_WELL; ++i) {
+        kalloc_init_mag(&well->mag[i]);
+    }
+
+    mm_well_kalloc(well, 8);
+    mm_well_kalloc(well, 40);
+    mm_well_kalloc(well, 128);
+    return 0;
+}

@@ -8,11 +8,14 @@
 #include <acpi/acpi.h>
 #include <mm/physmem.h>
 #include <mm/vmem.h>
+#include <mm/kalloc.h>
 #include <lib/printf.h>
 #include <hal/cpu.h>
 
 /* Kernel version */
 #define _M1X_VERSION "0.0.2"
+
+static struct kalloc_magwell well;
 
 /* Default console attributes */
 static struct cons_attr conattr = {
@@ -51,6 +54,11 @@ kmain(void)
     /* Initialize the VMM */
     mm_vmem_init();
 
+    /* Initialize ACPI */
     acpi_init();
+
+    /* Initialize kalloc */
+    mm_kalloc_init(&well);
+
     printf("-- END OF KERNEL REACHED; HALTING --\n");
 }
