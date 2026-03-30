@@ -5,6 +5,7 @@
 
 #include <dev/cons/cons.h>
 #include <kern/panic.h>
+#include <hal/kpcr.h>
 #include <acpi/acpi.h>
 #include <mm/physmem.h>
 #include <mm/vmem.h>
@@ -15,6 +16,7 @@
 /* Kernel version */
 #define _M1X_VERSION "0.0.2"
 
+static struct kpcr bsp;
 static struct kalloc_magwell well;
 
 /* Default console attributes */
@@ -46,7 +48,7 @@ kmain(void)
     banner();
 
     /* Initialize the BSP */
-    hal_cpu_init();
+    hal_cpu_init(&bsp);
 
     /* Initialize the PMM */
     mm_physmem_init();

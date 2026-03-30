@@ -13,9 +13,6 @@
 #define pr_trace(fmt, ...) \
     printf("cpu: " fmt, ##__VA_ARGS__)
 
-/* TODO: Put this in GS */
-static struct kpcr bsp;
-
 /* From cpu/locore.S */
 extern void md_cpu_lgdt(void *gdtr);
 extern char g_GDTR[];
@@ -41,8 +38,12 @@ cpu_ident(struct mcb *mcb)
 }
 
 void
-hal_cpu_init(void)
+hal_cpu_init(struct kpcr *kpcr)
 {
+    if (kpcr == NULL) {
+        return;
+    }
+
     /* Load the GDT */
     md_cpu_lgdt(g_GDTR);
 
@@ -53,5 +54,5 @@ hal_cpu_init(void)
     md_idt_load();
 
     /* Identify the processor */
-    cpu_ident(&bsp.mcb);
+    cpu_ident(&kpcr->mcb);
 }

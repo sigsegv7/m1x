@@ -11,10 +11,11 @@
  * of the standard processor primitives.
  */
 #include <machine/prim.h>
+#include <hal/kpcr.h>
 
 /*
  * Initialize the current processor
  */
-void hal_cpu_init(void);
+void hal_cpu_init(struct kpcr *kpcr);
 
 #endif  /* !_HAL_CPU_H_ */
