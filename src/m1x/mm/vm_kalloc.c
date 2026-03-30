@@ -5,6 +5,7 @@
 
 #include <sys/param.h>
 #include <kern/panic.h>
+#include <hal/kpcr.h>
 #include <mm/kalloc.h>
 #include <mm/vmem.h>
 #include <mm/physmem.h>
@@ -212,7 +213,15 @@ kalloc_from_desc(struct kalloc_slab_desc *desc, size_t n, size_t gran)
     return base;
 }
 
-void *
+/*
+ * Allocate a number of bytes from a well
+ *
+ * @well: Well to allocate from
+ * @n:    Number of bytes to allocate
+ *
+ * Returns the base of the memory on success
+ */
+static void *
 mm_well_kalloc(struct kalloc_magwell *well, size_t n)
 {
     struct kalloc_mag *mag;
@@ -237,6 +246,18 @@ mm_well_kalloc(struct kalloc_magwell *well, size_t n)
     }
 
     return base;
+}
+
+void *
+mm_kalloc(size_t size)
+{
+    struct kpcr *kpcr;
+
+    if ((kpcr = hal_this_cpu()) == NULL) {
+        return NULL;
+    }
+
+    return mm_well_kalloc(&kpcr->magwell, size);
 }
 
 int

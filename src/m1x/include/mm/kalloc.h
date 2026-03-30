@@ -59,14 +59,13 @@ struct kalloc_magwell {
 };
 
 /*
- * Allocate a number of bytes from a well
+ * Allocate `size` bytes of memory
  *
- * @well: Well to allocate from
- * @n:    Number of bytes to allocate
+ * @size: Number of bytes to allocate
  *
  * Returns the base of the memory on success
  */
-void *mm_well_kalloc(struct kalloc_magwell *well, size_t n);
+void *mm_kalloc(size_t size);
 
 /*
  * Initialize a kalloc magazine well
