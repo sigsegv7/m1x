@@ -25,7 +25,6 @@ static size_t grantab[MAGS_PER_WELL] = {
     GRAN(4), GRAN(5),
     GRAN(6), GRAN(7)
 };
-#undef GRAN
 
 /*
  * Obtain a magazine well from a size
@@ -87,9 +86,10 @@ kalloc_init_slabdesc(struct kalloc_slab_desc *desc)
  * Initialize a magazine
  *
  * @mag: Magazine to initialize
+ * @index: Index of magazine
  */
 static int
-kalloc_init_mag(struct kalloc_mag *mag)
+kalloc_init_mag(struct kalloc_mag *mag, size_t index)
 {
     uintptr_t desc_pool_pma;
     size_t desc_pool_entries;
@@ -112,6 +112,7 @@ kalloc_init_mag(struct kalloc_mag *mag)
     desc_pool_entries = (PAGESIZE * SLAB_DESC_POOLSZ);
     desc_pool_entries /= sizeof(struct kalloc_slab_desc);
     mag->n_entries = desc_pool_entries;
+    mag->gran = GRAN(index);
 
     for (size_t i = 0; i < desc_pool_entries; ++i) {
         kalloc_init_slabdesc(&desc_pool[i]);
@@ -140,6 +141,7 @@ kalloc_pull_empty(struct kalloc_mag *mag)
     /* TODO: LOCKING */
     desc = TAILQ_FIRST(&mag->empty);
     TAILQ_REMOVE(&mag->empty, desc, link);
+    TAILQ_INSERT_TAIL(&mag->partial, desc, link);
     return desc;
 }
 
@@ -169,11 +171,53 @@ kalloc_pull(struct kalloc_mag *mag)
     return desc;
 }
 
+/*
+ * Allocate memory from a descriptor
+ *
+ * @desc:  Descriptor to allocate from
+ * @n:     Number of bytes to allocate
+ * @gran:  Magazine granularity
+ */
+static void *
+kalloc_from_desc(struct kalloc_slab_desc *desc, size_t n, size_t gran)
+{
+    ssize_t bit_base = -1;
+    size_t bits_needed;
+    size_t bits_found = 0;
+    void *base = NULL;
+
+    if (desc == NULL) {
+        return -1;
+    }
+
+    bits_needed = n / gran;
+    for (size_t i = 0; i < sizeof(desc->bitmap) * 8; ++i) {
+        if (!ISSET(desc->bitmap, BIT(i))) {
+            if (bit_base < 0) bit_base = i;
+            ++bits_found;
+        } else {
+            bit_base = -1;
+        }
+
+        if (bits_found >= bits_needed) {
+            base = PTR_OFFSET(desc->slab, bit_base * gran);
+            break;
+        }
+    }
+
+    for (size_t i = 0; i < bits_found; ++i) {
+        desc->bitmap |= BIT(bit_base + i);
+    }
+
+    return base;
+}
+
 void *
 mm_well_kalloc(struct kalloc_magwell *well, size_t n)
 {
     struct kalloc_mag *mag;
     struct kalloc_slab_desc *desc;
+    void *base;
 
     if (well == NULL) {
         return NULL;
@@ -186,9 +230,13 @@ mm_well_kalloc(struct kalloc_magwell *well, size_t n)
     }
 
     desc = kalloc_pull(mag);
+    base = kalloc_from_desc(desc, n, mag->gran);
 
-    /* TODO: Actual allocation */
-    return NULL;
+    if (base == NULL) {
+        return NULL;
+    }
+
+    return base;
 }
 
 int
@@ -199,11 +247,8 @@ mm_kalloc_init(struct kalloc_magwell *well)
     }
 
     for (size_t i = 0; i < MAGS_PER_WELL; ++i) {
-        kalloc_init_mag(&well->mag[i]);
+        kalloc_init_mag(&well->mag[i], i);
     }
 
-    mm_well_kalloc(well, 8);
-    mm_well_kalloc(well, 40);
-    mm_well_kalloc(well, 128);
     return 0;
 }
