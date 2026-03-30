@@ -24,13 +24,27 @@
  * a slab
  *
  * @link:  Queue link
+ * @mag:   Magazine we belong to
  * @bitmap: Granularity significant bitmap (1: free)
  * @slab:  Reference to the slab
  */
 struct __align(8) kalloc_slab_desc {
     TAILQ_ENTRY(kalloc_slab_desc) link;
+    struct kalloc_mag *mag;
     uint64_t bitmap;
     void *slab;
+};
+
+/*
+ * Represents an allocation header that is tacked
+ * before the data.
+ *
+ * @len: Length of allocation
+ * @desc: Slab descriptor
+ */
+struct kalloc_header {
+    size_t len;
+    struct kalloc_slab_desc *desc;
 };
 
 /*
@@ -57,6 +71,13 @@ struct kalloc_mag {
 struct kalloc_magwell {
     struct kalloc_mag mag[MAGS_PER_WELL];
 };
+
+/*
+ * Free a pointer referenced by `ptr`
+ *
+ * @ptr: Base of region to free
+ */
+void mm_kfree(void *ptr);
 
 /*
  * Allocate `size` bytes of memory

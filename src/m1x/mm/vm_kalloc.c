@@ -62,11 +62,12 @@ kalloc_size_to_mag(struct kalloc_magwell *well, size_t n)
  * Initialize a slab descriptor
  *
  * @desc: Slab descriptor to initialize
+ * @mag:  Magazine we belong to
  *
  * Returns zero on success
  */
 static int
-kalloc_init_slabdesc(struct kalloc_slab_desc *desc)
+kalloc_init_slabdesc(struct kalloc_slab_desc *desc, struct kalloc_mag *mag)
 {
     uintptr_t pma;
 
@@ -81,6 +82,7 @@ kalloc_init_slabdesc(struct kalloc_slab_desc *desc)
 
     desc->slab = pma_to_vma(pma);
     desc->bitmap = 0;
+    desc->mag = mag;
     return 0;
 }
 
@@ -117,7 +119,7 @@ kalloc_init_mag(struct kalloc_mag *mag, size_t index)
     mag->gran = GRAN(index);
 
     for (size_t i = 0; i < desc_pool_entries; ++i) {
-        kalloc_init_slabdesc(&desc_pool[i]);
+        kalloc_init_slabdesc(&desc_pool[i], mag);
         TAILQ_INSERT_TAIL(&mag->empty, &desc_pool[i], link);
     }
 
@@ -234,7 +236,6 @@ mm_well_kalloc(struct kalloc_magwell *well, size_t n, struct kalloc_slab_desc **
         return NULL;
     }
 
-    n = ALIGN_UP(n, 1 << MIN_LOG2_ALLOCSZ);
     mag = kalloc_size_to_mag(well, n);
     if (mag == NULL) {
         return NULL;
@@ -255,7 +256,8 @@ void *
 mm_kalloc(size_t size)
 {
     struct kpcr *kpcr;
-    struct kalloc_slab_desc *desc, **hdr;
+    struct kalloc_slab_desc *desc;
+    struct kalloc_header *hdr;
     size_t data_off;
     void *mem, *data;
 
@@ -263,7 +265,8 @@ mm_kalloc(size_t size)
         return NULL;
     }
 
-    data_off = sizeof(struct kalloc_slab_desc *);
+    size = ALIGN_UP(size, 1 << MIN_LOG2_ALLOCSZ);
+    data_off = sizeof(struct kalloc_header);
     mem = mm_well_kalloc(
         &kpcr->magwell,
         size + data_off,
@@ -281,10 +284,35 @@ mm_kalloc(size_t size)
     data = PTR_OFFSET(mem, data_off);
     memset(data, 0, size);
 
-    /* Tack the descriptor reference at the start */
-    hdr = (struct kalloc_slab_desc **)mem;
-    *hdr = desc;
+    /* Tack the header at the start */
+    hdr = (struct kalloc_header *)mem;
+    hdr->desc = desc;
+    hdr->len = size;
     return data;
+}
+
+void
+mm_kfree(void *ptr)
+{
+    size_t delta, off;
+    struct kalloc_header *hdr;
+    struct kalloc_slab_desc *desc;
+    struct kalloc_mag *mag;
+
+    if (ptr == NULL) {
+        return;
+    }
+
+    hdr = PTR_NOFFSET(ptr, sizeof(struct kalloc_header));
+    desc = hdr->desc;
+    mag = desc->mag;
+
+    /* Compute the bit offset and mark as free */
+    delta = (size_t)ptr - (uintptr_t)desc->slab;
+    for (size_t i = 0; i < hdr->len / mag->gran; ++i) {
+        off = (delta / mag->gran) + i;
+        desc->bitmap &= ~BIT(off);
+    }
 }
 
 int
