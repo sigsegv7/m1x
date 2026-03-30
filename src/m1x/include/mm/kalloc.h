@@ -40,18 +40,14 @@ struct __align(8) kalloc_slab_desc {
  * @empty:      Empty slabs
  * @partial:    Partial slabs
  * @full:       Full slabs
- * @n_empty:    Number of empty slabs
- * @n_partial:  Number of partial slabs
- * @n_full:     Number of full slabs
+ * @gran:       Granularity of this mag
  * @n_entries:  Number of entries in each field
  */
 struct kalloc_mag {
     TAILQ_HEAD(, kalloc_slab_desc) empty;
     TAILQ_HEAD(, kalloc_slab_desc) partial;
     TAILQ_HEAD(, kalloc_slab_desc) full;
-    size_t n_empty;
-    size_t n_partial;
-    size_t n_full;
+    size_t gran;
     size_t n_entries;
 };
 
