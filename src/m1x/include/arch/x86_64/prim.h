@@ -10,11 +10,11 @@
 #include <sys/cdefs.h>
 
 /* Hint to the processor that we are in a spinloop */
-#define hal_cpu_spinwait() \
+#define md_cpu_spinwait() \
     __asmv("pause" ::: "memory")
 
 /* Halt the current processor core */
-#define hal_cpu_halt()  \
+#define md_cpu_malt()  \
     __asmv("hlt" ::: "memory")
 
 /*
@@ -24,7 +24,7 @@
  * @v: Value to swap to `p`
  */
 __always_inline static inline size_t
-hal_cpu_aswap(size_t *p, size_t v)
+md_cpu_aswap(size_t *p, size_t v)
 {
     size_t vret;
 
