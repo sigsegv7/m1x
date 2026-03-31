@@ -26,6 +26,11 @@
     __asmv("sti" ::: "memory")
 
 /*
+ * Return true if IRQs are enabled
+ */
+bool md_cpu_irqen(void);
+
+/*
  * Atomic swap operation
  *
  * @p: Location to swap with `v`

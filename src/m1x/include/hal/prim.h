@@ -28,4 +28,8 @@
 #define hal_cpu_irqon md_cpu_irqon
 #endif  /* !hal_cpu_irqon */
 
+#ifndef hal_cpu_irqen
+#define hal_cpu_irqen md_cpu_irqen
+#endif  /* !hal_cpu_irqen */
+
 #endif  /* !_HAL_PRIM_H_ */
