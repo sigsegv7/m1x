@@ -14,7 +14,7 @@
     __asmv("pause" ::: "memory")
 
 /* Halt the current processor core */
-#define md_cpu_malt()  \
+#define md_cpu_halt()  \
     __asmv("hlt" ::: "memory")
 
 /* Disable IRQs */

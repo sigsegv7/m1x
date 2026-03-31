@@ -9,6 +9,7 @@
 #include <string.h>
 #include <dev/cons/cons.h>
 #include <hal/cpu.h>
+#include <hal/prim.h>
 
 /*
  * Even though the stack is guaranteed to be sane upon entry,
