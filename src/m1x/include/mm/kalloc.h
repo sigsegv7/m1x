@@ -9,6 +9,7 @@
 #include <sys/cdefs.h>
 #include <sys/queue.h>
 #include <sys/types.h>
+#include <kern/cpulock.h>
 
 /* Number of pages in a slab descriptor pool */
 #define SLAB_DESC_POOLSZ 1
@@ -56,6 +57,7 @@ struct kalloc_header {
  * @full:       Full slabs
  * @gran:       Granularity of this mag
  * @n_entries:  Number of entries in each field
+ * @lock:       CPU lock
  */
 struct kalloc_mag {
     TAILQ_HEAD(, kalloc_slab_desc) empty;
@@ -63,6 +65,7 @@ struct kalloc_mag {
     TAILQ_HEAD(, kalloc_slab_desc) full;
     size_t gran;
     size_t n_entries;
+    cpu_lock_t lock;
 };
 
 /*

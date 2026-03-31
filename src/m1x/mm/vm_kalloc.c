@@ -5,6 +5,7 @@
 
 #include <sys/param.h>
 #include <kern/panic.h>
+#include <kern/cpulock.h>
 #include <hal/cpu.h>
 #include <mm/kalloc.h>
 #include <mm/vmem.h>
@@ -142,10 +143,11 @@ kalloc_pull_empty(struct kalloc_mag *mag)
         return NULL;
     }
 
-    /* TODO: LOCKING */
+    cpu_lock_acquire(&mag->lock, true);
     desc = TAILQ_FIRST(&mag->empty);
     TAILQ_REMOVE(&mag->empty, desc, link);
     TAILQ_INSERT_TAIL(&mag->partial, desc, link);
+    cpu_lock_release(&mag->lock);
     return desc;
 }
 
@@ -169,9 +171,10 @@ kalloc_pull(struct kalloc_mag *mag)
         return desc;
     }
 
-    /* TODO: LOCKING */
+    cpu_lock_acquire(&mag->lock, true);
     desc = TAILQ_FIRST(&mag->partial);
     TAILQ_REMOVE(&mag->partial, desc, link);
+    cpu_lock_release(&mag->lock);
     return desc;
 }
 
