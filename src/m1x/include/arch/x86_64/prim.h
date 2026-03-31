@@ -17,6 +17,14 @@
 #define md_cpu_malt()  \
     __asmv("hlt" ::: "memory")
 
+/* Disable IRQs */
+#define md_cpu_irqoff() \
+    __asmv("cli" ::: "memory")
+
+/* Enable IRQs */
+#define md_cpu_irqon() \
+    __asmv("sti" ::: "memory")
+
 /*
  * Atomic swap operation
  *

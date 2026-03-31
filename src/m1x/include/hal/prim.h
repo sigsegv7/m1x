@@ -20,4 +20,12 @@
 #define hal_cpu_aswap md_cpu_aswap
 #endif  /* !hal_cpu_aswap */
 
+#ifndef hal_cpu_irqoff
+#define hal_cpu_irqoff md_cpu_irqoff
+#endif  /* !hal_cpu_irqoff */
+
+#ifndef hal_cpu_irqon
+#define hal_cpu_irqon md_cpu_irqon
+#endif  /* !hal_cpu_irqon */
+
 #endif  /* !_HAL_PRIM_H_ */
