@@ -4,7 +4,7 @@
  */
 
 #include <sys/types.h>
-#include <machine/cpu_lock.h>
+#include <kern/cpulock.h>
 #include <hal/prim.h>
 
 void
