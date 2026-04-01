@@ -11,6 +11,8 @@
 #include <sys/cdefs.h>
 #endif
 
+#define GDT_ENTRY_COUNT 7
+
 /* Kernel code/data */
 #define GDT_KCODE  0x08
 #define GDT_KDATA  0x10
@@ -37,6 +39,6 @@ struct __packed gdtr {
     uintptr_t offset;
 };
 
-extern struct gdt_entry g_GDT[];
+extern struct gdt_entry g_GDT[GDT_ENTRY_COUNT];
 #endif
 #endif  /* !_MACHINE_GDT_H_ */
