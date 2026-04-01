@@ -17,7 +17,7 @@
  * and vice versa.
  */
 #define vma_to_pma(vma) \
-    PTR_NOFFSET(vma, KERNEL_BASE)
+    (uintptr_t)PTR_NOFFSET(vma, KERNEL_BASE)
 #define pma_to_vma(pma) \
     PTR_OFFSET((void *)pma, KERNEL_BASE)
 
