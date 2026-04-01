@@ -11,6 +11,7 @@
 #include <machine/cpuid.h>
 #include <machine/msr.h>
 #include <machine/tss.h>
+#include <string.h>
 
 #define pr_trace(fmt, ...) \
     printf("cpu: " fmt, ##__VA_ARGS__)
@@ -39,6 +40,26 @@ cpu_ident(struct mcb *mcb)
     pr_trace("family : %x\n", mcb->family);
 }
 
+/*
+ * Initialize the global descriptor table
+ */
+static void
+cpu_init_gdt(struct mcb *mcb)
+{
+    struct gdtr *gdtr;
+
+    if (mcb == NULL) {
+        return;
+    }
+
+    gdtr = &mcb->gdtr;
+    memcpy(mcb->gdt, g_GDT, sizeof(mcb->gdt));
+
+    gdtr->limit = sizeof(mcb->gdt) - 1;
+    gdtr->offset = (uintptr_t)&mcb->gdt[0];
+    md_cpu_lgdt(gdtr);
+}
+
 void
 hal_cpu_init(struct kpcr *kpcr)
 {
@@ -47,7 +68,7 @@ hal_cpu_init(struct kpcr *kpcr)
     }
 
     /* Load the GDT */
-    md_cpu_lgdt(g_GDTR);
+    cpu_init_gdt(&kpcr->mcb);
 
     /* Populate the IDT with entries */
     md_idt_fill();
