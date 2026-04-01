@@ -294,6 +294,29 @@ mm_kalloc(size_t size)
     return data;
 }
 
+void *
+mm_krealloc(void *ptr, size_t newsize)
+{
+    struct kalloc_header *hdr;
+    void *new_buf;
+    size_t oldsize;
+
+    if (ptr == NULL || newsize == 0) {
+        return NULL;
+    }
+
+    hdr = PTR_NOFFSET(ptr, sizeof(struct kalloc_header));
+    oldsize = hdr->len;
+
+    if ((new_buf = mm_kalloc(newsize)) == NULL) {
+        return NULL;
+    }
+
+    memcpy(new_buf, ptr, oldsize);
+    mm_kfree(ptr);
+    return new_buf;
+}
+
 void
 mm_kfree(void *ptr)
 {

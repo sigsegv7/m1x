@@ -92,6 +92,16 @@ void mm_kfree(void *ptr);
 void *mm_kalloc(size_t size);
 
 /*
+ * Resize a buffer to a new given size
+ *
+ * @ptr: Base of buffer to resize
+ * @newsize: New size to provide buffer
+ *
+ * Returns the base of the new memory on success
+ */
+void *mm_krealloc(void *ptr, size_t newsize);
+
+/*
  * Initialize a kalloc magazine well
  *
  * @well: magazine well to initialize
