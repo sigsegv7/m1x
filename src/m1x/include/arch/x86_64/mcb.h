@@ -7,7 +7,7 @@
 #define _MACHINE_MCB_H_ 1
 
 #include <sys/types.h>
-#include <machine/mcb.h>    /* per-arch */
+#include <machine/tss.h>
 
 /*
  * Machine core block containing MD processor
@@ -15,10 +15,12 @@
  *
  * @model:  Processor model ID
  * @family: Processor family ID
+ * @tss:    Task state segment
  */
 struct mcb {
     uint8_t model;
     uint16_t family : 12;
+    struct tss_entry *tss;
 };
 
 #endif  /* !_MACHINE_MCB_H_ */

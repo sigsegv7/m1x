@@ -58,4 +58,11 @@ struct __packed tss_entry {
     uint16_t iobp;
 };
 
+/*
+ * Initialize the task state segment
+ *
+ * @tss_desc:  Task state segment descriptor
+ */
+void md_tss_init(struct tss_desc *tss_desc);
+
 #endif  /* !_MACHINE_TSS_H_ */

@@ -10,6 +10,7 @@
 #include <machine/mcb.h>
 #include <machine/cpuid.h>
 #include <machine/msr.h>
+#include <machine/tss.h>
 
 #define pr_trace(fmt, ...) \
     printf("cpu: " fmt, ##__VA_ARGS__)
