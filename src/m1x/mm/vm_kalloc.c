@@ -76,7 +76,7 @@ kalloc_init_slabdesc(struct kalloc_slab_desc *desc, struct kalloc_mag *mag)
         return -1;
     }
 
-    pma = pmm_alloc_frame(PAGES_PER_SLAB);
+    pma = mm_alloc_frame(PAGES_PER_SLAB);
     if (pma == 0) {
         panic("out of memory\n");
     }
@@ -108,7 +108,7 @@ kalloc_init_mag(struct kalloc_mag *mag, size_t index)
     TAILQ_INIT(&mag->partial);
     TAILQ_INIT(&mag->full);
 
-    desc_pool_pma = pmm_alloc_frame(SLAB_DESC_POOLSZ);
+    desc_pool_pma = mm_alloc_frame(SLAB_DESC_POOLSZ);
     if (desc_pool_pma == 0) {
         return -1;
     }

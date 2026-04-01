@@ -19,7 +19,7 @@ void mm_physmem_init(void);
  * @base: Base of memory to free
  * @count: Number of frames to free
  */
-void pmm_free_frame(uintptr_t base, size_t count);
+void mm_free_frame(uintptr_t base, size_t count);
 
 /*
  * Allocate frame(s) of memory
@@ -29,6 +29,6 @@ void pmm_free_frame(uintptr_t base, size_t count);
  * Returns the page aligned base on success, otherwise
  * zero on failure.
  */
-uintptr_t pmm_alloc_frame(size_t count);
+uintptr_t mm_alloc_frame(size_t count);
 
 #endif  /* !_MM_PHYSMEM_H_ */

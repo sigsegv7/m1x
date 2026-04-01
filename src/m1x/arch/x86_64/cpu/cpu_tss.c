@@ -39,7 +39,7 @@ tss_alloc_resources(struct mcb *mcb)
     memset(tss, 0, sizeof(*mcb->tss));
 
     /* Allocate the kernel stack page */
-    if ((stack_pma = pmm_alloc_frame(1)) == 0) {
+    if ((stack_pma = mm_alloc_frame(1)) == 0) {
         panic("out of memory\n");
     }
 

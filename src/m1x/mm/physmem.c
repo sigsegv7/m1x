@@ -215,7 +215,7 @@ physmem_query_map(void)
  * @count: Number of frames to allocate.
  */
 static uintptr_t
-__pmm_alloc_frame(size_t count)
+__mm_alloc_frame(size_t count)
 {
     size_t frames = 0;
     ssize_t idx = -1;
@@ -254,7 +254,7 @@ done:
  * Central frame allocation routine
  */
 uintptr_t
-pmm_alloc_frame(size_t count)
+mm_alloc_frame(size_t count)
 {
     uintptr_t ret;
 
@@ -262,9 +262,9 @@ pmm_alloc_frame(size_t count)
         return 0;
     }
 
-    if ((ret = __pmm_alloc_frame(count)) == 0) {
+    if ((ret = __mm_alloc_frame(count)) == 0) {
         last_idx = 0;
-        ret = __pmm_alloc_frame(count);
+        ret = __mm_alloc_frame(count);
     }
 
     return ret;
@@ -274,7 +274,7 @@ pmm_alloc_frame(size_t count)
  * Central frame freeing routine
  */
 void
-pmm_free_frame(uintptr_t base, size_t count)
+mm_free_frame(uintptr_t base, size_t count)
 {
     size_t stop_at = base + (count * PAGESIZE);
 

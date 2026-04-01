@@ -69,7 +69,7 @@ hal_fork_vas(struct vas *res)
 
     hal_read_vas(&cur_vas);
     cr3 = cur_vas.cr3 & PTE_ADDR_MASK;
-    new_vas.cr3 = pmm_alloc_frame(1);
+    new_vas.cr3 = mm_alloc_frame(1);
 
     src = pma_to_vma(cr3);
     dest = pma_to_vma(new_vas.cr3);
