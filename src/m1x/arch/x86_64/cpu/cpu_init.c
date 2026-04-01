@@ -60,6 +60,20 @@ cpu_init_gdt(struct mcb *mcb)
     md_cpu_lgdt(gdtr);
 }
 
+static void
+cpu_init_tss(struct mcb *mcb)
+{
+    struct tss_desc *desc;
+
+    if (mcb == NULL) {
+        return;
+    }
+
+    desc = (struct tss_desc *)&mcb->gdt[GDT_TSS_INDEX];
+    md_tss_init(desc);
+    tss_load();
+}
+
 void
 hal_cpu_init(struct kpcr *kpcr)
 {
@@ -98,4 +112,7 @@ hal_cpu_postinit(struct kpcr *kpcr)
 
     /* Initialize kalloc */
     mm_kalloc_init(&kpcr->magwell);
+
+    /* Load the TSS */
+    cpu_init_tss(&kpcr->mcb);
 }

@@ -58,6 +58,15 @@ struct __packed tss_entry {
     uint16_t iobp;
 };
 
+__always_inline static inline void
+tss_load(void)
+{
+    __asmv("str %ax\n"
+           "mov $0x2B, %ax\n"
+           "ltr %ax"
+    );
+}
+
 /*
  * Initialize the task state segment
  *

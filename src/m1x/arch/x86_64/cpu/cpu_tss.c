@@ -53,15 +53,35 @@ tss_alloc_resources(struct mcb *mcb)
 void
 md_tss_init(struct tss_desc *tss_desc)
 {
+    struct mcb *mcb;
     struct kpcr *self;
+    struct tss_entry *tss;
+    uintptr_t tss_base;
 
     if (tss_desc == NULL) {
         return;
     }
 
     if ((self = hal_this_cpu()) == NULL) {
-        panic("tss: failed to initialize tss\n");
+        panic("tss: could not get current kpcr\n");
     }
 
-    tss_alloc_resources(&self->mcb);
+    mcb = &self->mcb;
+    tss_alloc_resources(mcb);
+    tss_base = (uintptr_t)mcb->tss;
+
+    tss_desc->seglimit_low = sizeof(struct tss_entry);
+    tss_desc->p = 1;        /* Must be present to be valid */
+    tss_desc->g = 0;        /* Granularity -> 0 */
+    tss_desc->avl = 0;      /* Not used */
+    tss_desc->dpl = 0;      /* Descriptor Privilege Level -> 0 */
+    tss_desc->type = 0x9;
+
+    tss_desc->base_low = tss_base & 0xFFFF;
+    tss_desc->base_mid = (tss_base >> 16) & 0xFF;
+    tss_desc->base_upmid = (tss_base >> 24) & 0xFF;
+    tss_desc->base_high = (tss_base >> 32) & 0xFFFFFFFF;
+
+    tss = mcb->tss;
+    tss->iobp = 0xFF;       /* No ring 3 I/O port access */
 }
