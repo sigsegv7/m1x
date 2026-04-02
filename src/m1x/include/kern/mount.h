@@ -42,12 +42,12 @@ struct mountlist {
 /*
  * Arguments associated with a mount operation
  *
- * @fs_name: Filesystem name max
- * @vp_res:  Vnode result is written here
+ * @mp: Mountpoint created to be associated with operation
+ * @targ: Target path
  */
 struct vfs_mount_args {
-    char fs_name[FS_NAME_MAX];
-    struct vnode **vp_res;
+    struct mount *mp;
+    const char *target;
 };
 
 /*
