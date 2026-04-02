@@ -7,6 +7,7 @@
 #define _HAL_KPCR_H_ 1
 
 #include <sys/types.h>
+#include <kern/process.h>
 #include <machine/mcb.h>    /* per-arch */
 #include <mm/kalloc.h>
 
@@ -17,11 +18,13 @@
  * @id:  Processor ID
  * @mcb: Machine core block
  * @magwell: Kalloc magazine well
+ * @curproc: Current process
  */
 struct kpcr {
     uint16_t id;
     struct mcb mcb;
     struct kalloc_magwell magwell;
+    struct process *curproc;
 };
 
 #endif  /* !_HAL_KPCR_H_ */

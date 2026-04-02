@@ -4,6 +4,7 @@
  */
 
 #include <dev/cons/cons.h>
+#include <kern/process.h>
 #include <kern/panic.h>
 #include <hal/kpcr.h>
 #include <acpi/acpi.h>
@@ -18,7 +19,11 @@
 /* Kernel version */
 #define _M1X_VERSION "0.0.2"
 
+/* Bootstrap processor */
 static struct kpcr bsp;
+
+/* Epoch process */
+static struct process epoch;
 
 /* Default console attributes */
 static struct cons_attr conattr = {
@@ -59,12 +64,20 @@ kmain(void)
 
     /* Initialize the VMM */
     mm_vmem_init();
-
+ 
     /* Initialize ACPI */
     acpi_init();
 
     /* Initialize platform specifics */
     hal_platform_init();
+
+    /* Create the epoch */
+    if (process_init(&epoch, 0) < 0) {
+        panic("failed to initialize epoch\n");
+    }
+
+    /* Treat ourself as the epoch */
+    bsp.curproc = &epoch;
 
     printf("-- END OF KERNEL REACHED; HALTING --\n");
 }
