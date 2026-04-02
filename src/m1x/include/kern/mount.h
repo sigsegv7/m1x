@@ -7,7 +7,7 @@
 #define _KERN_MOUNT_H_ 1
 
 #include <sys/queue.h>
-#include <sys/vnode.h>
+#include <kern/vnode.h>
 #include <sys/types.h>
 #include <sys/limits.h>
 
@@ -35,5 +35,14 @@ struct mountlist {
     TAILQ_HEAD(, mountpoint) list;
     size_t count;
 };
+
+/*
+ * Allocate a new mountlist
+ *
+ * @res: Result is written here
+ *
+ * Returns zero on success
+ */
+int vfs_mountlist_alloc(struct mountlist **res);
 
 #endif /* !_KERN_MOUNT_H_ */
