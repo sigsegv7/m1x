@@ -32,6 +32,7 @@ static void
 rsdp_parse(void)
 {
     uint8_t rev;
+    uint8_t csum = 0;
 
     /*
      * On certain emulators, the revision may appear as zero with
@@ -40,6 +41,16 @@ rsdp_parse(void)
      */
     if ((rev = rsdp->revision) == 0) {
         ++rev;
+    }
+
+    /* Sum all bytes of the table */
+    for (size_t i = 0; i < rsdp->length; ++i) {
+        csum += ((char *)rsdp)[i];
+    }
+
+    /* Is the checksum valid? */
+    if (csum != 0) {
+        panic("bad acpi rsdp checksum\n");
     }
 
     pr_trace("detected acpi %d.0 by %.6s\n", rev, rsdp->oemid);
