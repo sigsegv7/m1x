@@ -9,6 +9,7 @@
 #include <acpi/acpi.h>
 #include <mm/physmem.h>
 #include <mm/vmem.h>
+#include <hal/pmap.h>
 #include <mm/kalloc.h>
 #include <lib/printf.h>
 #include <hal/cpu.h>
