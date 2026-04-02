@@ -11,7 +11,7 @@
 #define PTR_NOFFSET(p, off) ((void *)(char *)(p) - (off))
 
 /* Bit related macros */
-#define BIT(n) (1 << (n))
+#define BIT(n) (1ULL << (n))
 #define ISSET(v, f)  ((v) & (f))
 
 /* Align up/down a value */
