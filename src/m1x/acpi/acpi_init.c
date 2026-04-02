@@ -6,7 +6,6 @@
 #include <kern/panic.h>
 #include <lib/limine.h>
 #include <lib/printf.h>
-#include <hal/irqchip.h>
 #include <acpi/acpi.h>
 #include <acpi/tables.h>
 #include <mm/vmem.h>
@@ -95,5 +94,4 @@ acpi_init(void)
 
     rsdp = rsdp = rsdp_resp->address;
     rsdp_parse();
-    hal_irqchip_init();
 }

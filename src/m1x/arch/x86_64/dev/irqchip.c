@@ -7,10 +7,10 @@
 #include <sys/param.h>
 #include <lib/printf.h>
 #include <kern/panic.h>
-#include <hal/irqchip.h>
 #include <acpi/tables.h>
 #include <acpi/acpi.h>
 #include <machine/pio.h>
+#include <machine/irqchip.h>
 
 #define pr_trace(fmt, ...) \
     printf("irqchip: " fmt, ##__VA_ARGS__)
@@ -77,7 +77,7 @@ md_lapic_index(size_t index)
 }
 
 int
-hal_irqchip_init(void)
+md_irqchip_init(void)
 {
     struct acpi_madt *madt;
     struct local_apic *lapic;

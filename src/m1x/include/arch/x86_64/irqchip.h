@@ -41,7 +41,7 @@ struct irqchip {
 /*
  * Initialize the IRQ chip manager
  */
-int hal_irqchip_init(void);
+int md_irqchip_init(void);
 
 /*
  * Obtain an I/O APIC by index

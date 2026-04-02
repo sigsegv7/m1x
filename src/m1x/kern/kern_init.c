@@ -13,6 +13,7 @@
 #include <mm/kalloc.h>
 #include <lib/printf.h>
 #include <hal/cpu.h>
+#include <hal/platform.h>
 
 /* Kernel version */
 #define _M1X_VERSION "0.0.2"
@@ -61,6 +62,9 @@ kmain(void)
 
     /* Initialize ACPI */
     acpi_init();
+
+    /* Initialize platform specifics */
+    hal_platform_init();
 
     printf("-- END OF KERNEL REACHED; HALTING --\n");
 }
