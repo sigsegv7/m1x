@@ -6,6 +6,7 @@
 #include <dev/cons/cons.h>
 #include <kern/process.h>
 #include <kern/panic.h>
+#include <kern/vfs.h>
 #include <hal/kpcr.h>
 #include <acpi/acpi.h>
 #include <mm/physmem.h>
@@ -78,6 +79,9 @@ kmain(void)
 
     /* Treat ourself as the epoch */
     bsp.curproc = &epoch;
+
+    /* Initialize the VFS */
+    vfs_init();
 
     printf("-- END OF KERNEL REACHED; HALTING --\n");
 }

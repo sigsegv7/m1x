@@ -11,6 +11,12 @@
 #include <sys/types.h>
 #include <sys/limits.h>
 
+struct fs_info;
+struct vfsops;
+
+/* Filesystem externs */
+extern struct vfsops g_tmpfs_vfsops;
+
 /* Maximum fs_info name length */
 #define FS_NAME_MAX 16
 
@@ -56,6 +62,7 @@ struct vfs_mount_args {
  */
 struct vfsops {
     int(*mount)(struct vfs_mount_args *args);
+    int(*init)(struct fs_info *info);
 };
 
 /*
