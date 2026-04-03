@@ -7,6 +7,7 @@
 #include <kern/vnode.h>
 #include <kern/mount.h>
 #include <lib/printf.h>
+#include <string.h>
 
 #define pr_trace(fmt, ...) \
     printf("vfs: " fmt, ##__VA_ARGS__)
@@ -45,4 +46,29 @@ vfs_init(void)
     }
 
     pr_trace("initialized %d filesystem(s), %d error(s)\n", n_init, n_error);
+}
+
+struct fs_info *
+vfs_by_name(const char *name)
+{
+    struct fs_info *info;
+
+    if (name == NULL) {
+        return NULL;
+    }
+
+    for (size_t i = 0; i < NELEM(fs_tab); ++i) {
+        info = &fs_tab[i];
+        if (*name != info->name[0]) {
+            continue;
+        }
+
+        if (strcmp(name, info->name) != 0) {
+            continue;
+        }
+
+        return info;
+    }
+
+    return NULL;
 }
